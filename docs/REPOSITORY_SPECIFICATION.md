@@ -1,6 +1,6 @@
 # Repository specification: aether-ai-billing
 
-**Status:** Documentation baseline copied from the Aether AI master specification. Implementation status must be verified separately.
+**Status:** Repository exists; documentation-only on the inspected `main` branch. No application implementation is present in the audited tree.
 
 ## Mission
 
@@ -8,7 +8,7 @@ Plans, entitlements, usage metering, quotas, billing abstraction, and billing au
 
 ## Dependencies and connections
 
-API, gateway usage events, database, queue.
+aether-ai-database, aether-ai-queue, and aether-ai-security; trusted usage events arrive from API/gateway without synchronous callbacks.
 
 ## Owned capabilities
 
