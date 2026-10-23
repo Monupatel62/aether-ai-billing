@@ -1,22 +1,23 @@
-# Aether AI Billing
+# aether-ai-billing
 
-**Status:** Documentation foundation only. No billing code, payment integration, or production behavior is claimed.
+**Status:** Initial usage-metering primitives implemented on a feature branch. No invoicing, subscription management, payment processor, or financial ledger is configured.
 
-Owns plan definitions, entitlements, usage metering, quota decisions, an idempotent usage ledger, billing abstractions, and auditable adjustments. Payment provider and pricing model remain undecided.
+## Implemented
 
-## Documents
+- [Usage meter](src/index.js): versioned usage-event validation, producer verification callback, bounded metric/units/timestamps, idempotent append contract, and integer microcurrency cost calculation.
+- [Unit tests](test/billing.test.js): duplicate event delivery, untrusted producer rejection, malformed usage, ledger failure, and cost overflow.
+- Dependency-free Node.js package with Node 20/22 CI.
+
+## Financial integrity boundaries
+
+The store must atomically enforce uniqueness on event ID. The verifier must authenticate the producer and authorize it to report usage for the tenant; client-supplied usage must never be trusted directly. Pricing is integer-based to avoid floating-point rounding, but currency, rounding, credits, taxes, invoicing, reconciliation, and audit requirements remain to be specified.
+
+## Documentation
+
+- [Repository specification](docs/REPOSITORY_SPECIFICATION.md)
 - [Project specification](docs/PROJECT_SPEC.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [Dependencies and contracts](docs/DEPENDENCIES_AND_CONTRACTS.md)
-- [Technical design](docs/TECHNICAL_DESIGN.md)
 - [Implementation plan](docs/IMPLEMENTATION_PLAN.md)
 - [Security review](docs/SECURITY_REVIEW.md)
-- [Research and licenses](docs/RESEARCH_AND_LICENSES.md)
-- [Engineering standard](docs/ENGINEERING_STANDARD.md)
-- [Work log](docs/WORKLOG.md)
-
-## Non-negotiable boundaries
-- Usage records and quota decisions must be tenant-scoped and auditable.
-- Retries must not double-count usage or duplicate financial adjustments.
-- Payment credentials are server-side only; never log secrets or payment data.
-- Billing does not own identity, model execution, or another service's private tables.
+- [Master catalog](https://github.com/Monupatel62/aether-ai-platform/blob/main/docs/REPOSITORY_CATALOG.md)

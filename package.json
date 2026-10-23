@@ -1,0 +1,10 @@
+{
+  "name": "@aether-ai/billing",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Validated idempotent usage metering primitives; no payment processing.",
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "exports": { ".": "./src/index.js" },
+  "scripts": { "test": "node --test", "check": "node --check src/index.js && node --check test/billing.test.js" }
+}
