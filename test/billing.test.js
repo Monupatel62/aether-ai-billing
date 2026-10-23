@@ -44,3 +44,9 @@ test("rejects an idempotency key reused for different usage", async () => {
   const meter = fixture({ store: { appendOnce: async (record) => ({ inserted: false, record: { ...record, units: record.units + 1 } }) } }).meter;
   await assert.rejects(meter.record(event), (e) => e.code === "idempotency_conflict");
 });
+
+
+test("fails closed when the metering clock is invalid", async () => {
+  const meter = fixture({ clock: () => Number.NaN }).meter;
+  await assert.rejects(meter.record(event), (e) => e.code === "clock_unavailable");
+});
