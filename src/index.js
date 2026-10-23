@@ -32,7 +32,12 @@ export function createUsageMeter({ store, verifyEvent, clock = () => Date.now(),
       });
       let result;
       try { result = await store.appendOnce(record); } catch { throw new BillingError("ledger_unavailable"); }
-      if (!isRecord(result) || typeof result.inserted !== "boolean") throw new BillingError("invalid_store_response");
+      if (!isRecord(result) || typeof result.inserted !== "boolean" || !isRecord(result.record)) throw new BillingError("invalid_store_response");
+      const stored = result.record;
+      const sameEvent = stored.id === record.id && stored.tenantId === record.tenantId && stored.producerId === record.producerId
+        && stored.metric === record.metric && stored.units === record.units && stored.occurredAt === record.occurredAt
+        && stored.schemaVersion === record.schemaVersion;
+      if (!sameEvent) throw new BillingError("idempotency_conflict", "Usage event ID was already used for a different event");
       return Object.freeze({ accepted: true, duplicate: !result.inserted, eventId: event.id });
     },
   });
