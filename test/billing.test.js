@@ -38,3 +38,9 @@ test("calculates exact integer costs and rejects overflow", () => {
   assert.throws(() => calculateUsageCost(Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER), (e) => e.code === "cost_overflow");
   assert.throws(() => calculateUsageCost(-1, 1), BillingError);
 });
+
+
+test("rejects an idempotency key reused for different usage", async () => {
+  const meter = fixture({ store: { appendOnce: async (record) => ({ inserted: false, record: { ...record, units: record.units + 1 } }) } }).meter;
+  await assert.rejects(meter.record(event), (e) => e.code === "idempotency_conflict");
+});
