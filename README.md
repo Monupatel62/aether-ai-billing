@@ -1,8 +1,12 @@
 # Aether AI Billing
 
-**Status:** Documentation foundation only. No billing code, payment integration, or production behavior is claimed.
+**Status:** Initial usage-event metadata validator is in review. No usage ledger, quota enforcement, pricing engine, payment integration, or production billing behavior is implemented.
 
 Owns plan definitions, entitlements, usage metering, quota decisions, an idempotent usage ledger, billing abstractions, and auditable adjustments. Payment provider and pricing model remain undecided.
+
+## Initial implementation
+
+The draft package validates versioned synthetic usage-event metadata, identifiers, unit/kind consistency, bounded non-negative quantities, event timestamps, and source/pricing references. It does not authenticate producers, deduplicate events, write a ledger, calculate charges, enforce quotas, or make financial decisions. Pricing and accounting policy remain unresolved.
 
 ## Documents
 - [Project specification](docs/PROJECT_SPEC.md)
