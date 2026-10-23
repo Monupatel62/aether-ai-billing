@@ -17,9 +17,11 @@ export function createUsageMeter({ store, verifyEvent, clock = () => Date.now(),
   if (!Number.isSafeInteger(maxUnits) || maxUnits < 1) throw new TypeError("maxUnits must be positive");
   return Object.freeze({
     async record(event) {
+      const now = clock();
+      if (!Number.isSafeInteger(now) || now < 0) throw new BillingError("clock_unavailable");
       if (!isRecord(event) || event.schemaVersion !== 1 || !validId(event.id) || !validId(event.tenantId) || !validId(event.producerId)
         || !validId(event.metric) || !METRICS.has(event.metric) || !Number.isSafeInteger(event.units) || event.units < 0 || event.units > maxUnits
-        || !Number.isSafeInteger(event.occurredAt) || event.occurredAt < 0 || event.occurredAt > clock() + 300_000) {
+        || !Number.isSafeInteger(event.occurredAt) || event.occurredAt < 0 || event.occurredAt > now + 300_000) {
         throw new BillingError("invalid_usage_event");
       }
       let verified = false;
@@ -28,7 +30,7 @@ export function createUsageMeter({ store, verifyEvent, clock = () => Date.now(),
       const record = Object.freeze({
         id: event.id, tenantId: event.tenantId, producerId: event.producerId,
         metric: event.metric, units: event.units, occurredAt: event.occurredAt,
-        receivedAt: clock(), schemaVersion: 1,
+        receivedAt: now, schemaVersion: 1,
       });
       let result;
       try { result = await store.appendOnce(record); } catch { throw new BillingError("ledger_unavailable"); }
